@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/video-audio-recorder/static/css/main.aa50288b.css",
-    "main.js": "/video-audio-recorder/static/js/main.a43da29a.js",
+    "main.css": "/video-audio-recorder/static/css/main.9f064efd.css",
+    "main.js": "/video-audio-recorder/static/js/main.894be87b.js",
     "static/js/453.d48cc504.chunk.js": "/video-audio-recorder/static/js/453.d48cc504.chunk.js",
     "index.html": "/video-audio-recorder/index.html",
-    "main.aa50288b.css.map": "/video-audio-recorder/static/css/main.aa50288b.css.map",
-    "main.a43da29a.js.map": "/video-audio-recorder/static/js/main.a43da29a.js.map",
+    "main.9f064efd.css.map": "/video-audio-recorder/static/css/main.9f064efd.css.map",
+    "main.894be87b.js.map": "/video-audio-recorder/static/js/main.894be87b.js.map",
     "453.d48cc504.chunk.js.map": "/video-audio-recorder/static/js/453.d48cc504.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aa50288b.css",
-    "static/js/main.a43da29a.js"
+    "static/css/main.9f064efd.css",
+    "static/js/main.894be87b.js"
   ]
 }
