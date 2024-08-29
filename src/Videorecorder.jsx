@@ -68,6 +68,11 @@
 // export default RecordView;
 
 
+
+
+
+
+
 import React, { useState, useRef } from 'react';
 
 const RecordView = () => {
@@ -104,7 +109,8 @@ const RecordView = () => {
           chunksRef.current = [];
           setIsRecording(false);
           setIsPopupOpen(true);
-          videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+          // Stop all video tracks
+          stream.getTracks().forEach((track) => track.stop());
         };
 
         mediaRecorderRef.current.start();
@@ -142,7 +148,7 @@ const RecordView = () => {
             <button onClick={handleStartRecording}>Click to Start Recording</button>
           )}
           <div>
-            <video ref={videoRef} style={{ display: 'none' }} />
+            <video ref={videoRef} autoPlay muted style={{ width: '100%' }} />
           </div>
         </div>
       ) : (
