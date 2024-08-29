@@ -11,6 +11,7 @@ const VideoRecorder = () => {
   const [facingMode, setFacingMode] = useState('user');
   const [recordingTime, setRecordingTime] = useState(0);
   const [timerInterval, setTimerInterval] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
 
   const handleOpenCamera = () => {
     setIsCameraOpen(true);
@@ -19,17 +20,18 @@ const VideoRecorder = () => {
   const handleStartRecording = () => {
     setIsRecording(true);
     setRecordingTime(0); // Reset timer
-
     const stream = webcamRef.current.stream;
-    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    
+    // Start capturing audio when recording starts
+    const newMediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
-    mediaRecorder.ondataavailable = (event) => {
+    newMediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         setRecordedChunks((prev) => prev.concat(event.data));
       }
     };
 
-    mediaRecorder.onstop = () => {
+    newMediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: 'video/webm' });
       setVideoSrc(URL.createObjectURL(blob));
       setRecordedChunks([]);
@@ -37,20 +39,24 @@ const VideoRecorder = () => {
       clearInterval(timerInterval); // Stop timer
     };
 
-    mediaRecorder.start();
+    newMediaRecorder.start();
+    setMediaRecorder(newMediaRecorder);
     startTimer(); // Start timer
   };
 
   const handleStopRecording = () => {
-    const stream = webcamRef.current.stream;
-    const tracks = stream.getTracks();
-
-    tracks.forEach((track) => track.stop());
-    setIsRecording(false);
+    if (mediaRecorder) {
+      mediaRecorder.stop(); // Stop the media recorder
+    }
   };
 
   const handleToggleCamera = () => {
     setFacingMode((prevMode) => (prevMode === 'user' ? 'environment' : 'user'));
+  };
+
+  const handleClosePopup = () => {
+    setVideoSrc(null); // Close the popup
+    setIsCameraOpen(true); // Reopen the camera
   };
 
   const startTimer = () => {
@@ -73,7 +79,7 @@ const VideoRecorder = () => {
       ) : (
         <div className="camera-container">
           <Webcam
-            audio={true}
+            audio={false} // Disable audio when the camera opens
             ref={webcamRef}
             screenshotFormat="image/webm"
             videoConstraints={{ facingMode }}
@@ -104,6 +110,9 @@ const VideoRecorder = () => {
         <div className="popup">
           <div className="popup-content">
             <video src={videoSrc} controls autoPlay />
+            <button className="close-button" onClick={handleClosePopup}>
+              Close
+            </button>
           </div>
         </div>
       )}

@@ -8,7 +8,7 @@
   font-family: 'Arial', sans-serif;
 }
 
-.start-button, .switch-button, .record-button, .stop-button {
+.start-button, .switch-button, .record-button, .stop-button, .close-button {
   padding: 10px 20px;
   font-size: 16px;
   margin: 10px;
@@ -34,6 +34,15 @@
 
 .switch-button:hover, .record-button:hover, .stop-button:hover {
   background-color: #218838;
+}
+
+.close-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.close-button:hover {
+  background-color: #c82333;
 }
 
 .camera-container {
@@ -83,4 +92,5 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
