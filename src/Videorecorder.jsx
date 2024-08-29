@@ -200,8 +200,6 @@
 
 
 
-
-
 import React, { useState, useRef, useEffect } from 'react';
 
 const RecordView = () => {
@@ -210,6 +208,7 @@ const RecordView = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [facingMode, setFacingMode] = useState('user'); // 'user' for front, 'environment' for back
+  const [isCameraOpen, setIsCameraOpen] = useState(false); // State to manage camera preview
   const mediaRecorderRef = useRef(null);
   const videoRef = useRef(null);
   const chunksRef = useRef([]);
@@ -224,15 +223,39 @@ const RecordView = () => {
     };
   }, []);
 
+  const handleStartCamera = () => {
+    if (isCameraOpen) return; // Prevent starting the camera again if already open
+    setIsCameraOpen(true)
+
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode }, audio: false })
+      .then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+          setIsCameraOpen(true);
+          streamRef.current = stream; // Save the stream for later use
+        }
+      })
+      .catch((error) => {
+        console.error('Error accessing media devices.', error);
+        setStatus('Failed to access media devices');
+      });
+  };
+
   const handleStartRecording = () => {
     if (isRecording) return; // Prevent starting a new recording if already recording
+
+    if (!isCameraOpen) {
+      handleStartCamera(); // Ensure the camera is open before starting recording
+    }
 
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode }, audio: true })
       .then((stream) => {
-        streamRef.current = stream; // Save the stream for later use
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        if (!videoRef.current) {
+          throw new Error('Video element not found');
+        }
 
         const options = { mimeType: 'video/webm; codecs=vp8' };
         mediaRecorderRef.current = new MediaRecorder(stream, options);
@@ -276,6 +299,9 @@ const RecordView = () => {
       // Restart recording with the new camera facing mode
       handleStopRecording();
       handleStartRecording();
+    } else {
+      // Restart the camera preview with the new facing mode
+      handleStartCamera();
     }
   };
 
@@ -286,41 +312,55 @@ const RecordView = () => {
     setMediaBlobUrl(null);
     setIsPopupOpen(false);
     setStatus('Ready to Record');
+    setIsCameraOpen(false); // Close the camera when the popup is closed
   };
 
   useEffect(() => {
-    if (streamRef.current) {
+    if (isCameraOpen) {
       // Restart the video stream with the new facing mode
       navigator.mediaDevices
-        .getUserMedia({ video: { facingMode }, audio: true })
+        .getUserMedia({ video: { facingMode }, audio: false })
         .then((stream) => {
-          videoRef.current.srcObject = stream;
-          streamRef.current.getTracks().forEach((track) => track.stop());
-          streamRef.current = stream;
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            streamRef.current.getTracks().forEach((track) => track.stop());
+            streamRef.current = stream;
+          }
         });
     }
   }, [facingMode]);
 
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
       {!isPopupOpen ? (
         <div>
-          {isRecording ? (
+          {isCameraOpen ? (
             <div>
-              <button onClick={handleStopRecording}>Stop Recording</button>
-              <button onClick={handleSwitchCamera}>Switch Camera</button>
+              <div>
+                <video ref={videoRef} autoPlay muted style={{ width: '100%', height: 'auto' }} />
+              </div>
+              <div>
+                {isRecording ? (
+                  <div>
+                    <button onClick={handleStopRecording}>Stop Recording</button>
+                    <button onClick={handleSwitchCamera}>Switch Camera</button>
+                  </div>
+                ) : (
+                  <div>
+                    <button onClick={handleStartRecording}>Start Recording</button>
+                    <button onClick={handleSwitchCamera}>Switch Camera</button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
-            <button onClick={handleStartRecording}>Click to Start Recording</button>
+            <button onClick={handleStartCamera}>Open Camera</button>
           )}
-          <div>
-            <video ref={videoRef} autoPlay muted style={{ width: '100%' }} />
-          </div>
         </div>
       ) : (
         <div className="popup">
           <div className="popup-content">
-            <video src={mediaBlobUrl} controls autoPlay />
+            <video src={mediaBlobUrl} controls autoPlay style={{ width: '100%' }} />
             <button className="close-button" onClick={handleClosePopup}>
               Close
             </button>
@@ -344,6 +384,9 @@ const RecordView = () => {
           padding: 20px;
           border-radius: 8px;
           text-align: center;
+          max-width: 90%;
+          max-height: 90%;
+          overflow: hidden;
         }
         .close-button {
           margin-top: 10px;
@@ -363,4 +406,3 @@ const RecordView = () => {
 };
 
 export default RecordView;
-
