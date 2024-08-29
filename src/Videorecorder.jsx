@@ -145,7 +145,7 @@ const RecordView = () => {
           {isRecording ? (
             <button onClick={handleStopRecording}>Stop Recording</button>
           ) : (
-            <button onClick={handleStartRecording}>Click to Start Recording</button>
+            <button onClick={handleStartRecording}>Click to Start Recording testing</button>
           )}
           <div>
             <video ref={videoRef} autoPlay muted style={{ width: '100%' }} />
