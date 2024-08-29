@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/video-audio-recorder/static/css/main.e6c13ad2.css",
+    "main.js": "/video-audio-recorder/static/js/main.8f5225b5.js",
+    "static/js/453.d48cc504.chunk.js": "/video-audio-recorder/static/js/453.d48cc504.chunk.js",
+    "index.html": "/video-audio-recorder/index.html",
+    "main.e6c13ad2.css.map": "/video-audio-recorder/static/css/main.e6c13ad2.css.map",
+    "main.8f5225b5.js.map": "/video-audio-recorder/static/js/main.8f5225b5.js.map",
+    "453.d48cc504.chunk.js.map": "/video-audio-recorder/static/js/453.d48cc504.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.8f5225b5.js"
+  ]
+}
