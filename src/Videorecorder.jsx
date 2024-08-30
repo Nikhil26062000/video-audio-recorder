@@ -200,6 +200,23 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useRef, useEffect } from 'react';
 
 const RecordView = () => {
@@ -305,6 +322,16 @@ const RecordView = () => {
     }
   };
 
+  // const handleClosePopup = () => {
+  //   if (mediaBlobUrl) {
+  //     URL.revokeObjectURL(mediaBlobUrl);
+  //   }
+  //   setMediaBlobUrl(null);
+  //   setIsPopupOpen(false);
+  //   setStatus('Ready to Record');
+  //   setIsCameraOpen(false); // Close the camera when the popup is closed
+  // };
+
   const handleClosePopup = () => {
     if (mediaBlobUrl) {
       URL.revokeObjectURL(mediaBlobUrl);
@@ -312,6 +339,10 @@ const RecordView = () => {
     setMediaBlobUrl(null);
     setIsPopupOpen(false);
     setStatus('Ready to Record');
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null; // Clear the reference
+    }
     setIsCameraOpen(false); // Close the camera when the popup is closed
   };
 
@@ -406,3 +437,19 @@ const RecordView = () => {
 };
 
 export default RecordView;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
