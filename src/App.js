@@ -7,7 +7,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<VideoRecorder />} />
+          <Route path="/video-audio-recorder" element={<VideoRecorder />} />
           <Route path="/audio" element={<Audio/>} />
         </Routes>
       </BrowserRouter>
